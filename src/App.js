@@ -1,9 +1,10 @@
 import UserDetails from "./UserDetails";
 import { useState } from "react";
-import axios from 'axios'
+import api from './Services/api';
 import './App.css';
 
 function App() {
+
   const [username, setUsername] = useState("");
   const [since, setSince] = useState("");
   const [user, setUser] = useState("");
@@ -29,32 +30,29 @@ function App() {
 
   //get all users since "/users?since={number}"
   function searchAllUsers() {
-    axios({
-      method: 'GET',
-      url: `https://api.github.com/users?since={${since}}`,
-    }).then(res => {
-      setUsers(res.data);
-    });
+    api.call(`?since={${since}}`)
+     .then((response) => setUsers(response.data))
+     .catch((err) => {
+      console.error("ops! ocorreu um erro" + err);
+   });
   };
 
    //get one specific user "/users/eliseudr"
    function searchUser() {
-    axios({
-      method: 'GET',
-      url: `https://api.github.com/users/${user}`,
-    }).then(res => {
-      setUserDetails(res.data);
-    });
+     api.get(`/${user}`)
+     .then((response) => setUserDetails(response.data))
+     .catch((err) => {
+      console.error("ops! ocorreu um erro" + err);
+   });
   };
 
   //get all repos from the user
   function searchRepos() {
-    axios({
-      method: 'GET',
-      url: `https://api.github.com/users/${username}/repos`,
-    }).then(res => {
-      setRepos(res.data);
-    });
+    api.get(`/${username}/repos`)
+    .then((response) => setRepos(response.data))
+    .catch((err) => {
+     console.error("ops! ocorreu um erro" + err);
+  });
   };
 
   function renderRepo(repo){
